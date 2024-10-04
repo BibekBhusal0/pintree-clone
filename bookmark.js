@@ -25,22 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("loading-spinner").style.display = "none";
 
       const firstLayer = data.length === 1 ? data[0].children : data;
-      // const firstLayer = data[0].children;
-
       renderNavigation(firstLayer, document.getElementById("navigation"));
       renderBookmarks(firstLayer, [{ title, children: firstLayer }]);
-
-      // Automatically select and show the first item
-      // if (firstLayer.length > 0) {
-      //   const firstItem = firstLayer[0];
-      //   updateSidebarActiveState([
-      //     { title: firstLayer.title, children: firstItem.children },
-      //   ]);
-      //   renderBookmarks(firstItem.children, [
-      //     { title: firstLayer.title, children: firstLayer },
-      //     { title: firstItem.title, children: firstItem.children },
-      //   ]);
-      // }
     })
     .catch((error) => {
       console.error("Error loading bookmarks:", error);

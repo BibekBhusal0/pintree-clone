@@ -1357,6 +1357,8 @@ select {
   white-space: nowrap;
 }
 
+
+
 .rounded {
   border-radius: 0.25rem;
 }
@@ -2382,4 +2384,3 @@ select {
     stroke: #14b8a6;
   }
 }
-
