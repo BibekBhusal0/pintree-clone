@@ -1,0 +1,19 @@
+{
+    "manifest_version": 3,
+    "name": "Chrome extension",
+    "description": "simple and useless chrome extension not to take seriously",
+    "version": "1.0",
+    "icons": {
+      "16": "images/color.png",
+      "32": "images/color.png",
+      "48": "images/color.png",
+      "128": "images/color.png"
+    },
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "chrome_url_overrides" :
+    {
+        "newtab": "new-tab.html"
+    }
+  }
