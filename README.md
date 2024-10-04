@@ -33,18 +33,28 @@ The Pintree Chrome Extension is ideal for users who prefer not to share their bo
 ### Step 1: Download the GitHub Repository
 
 Clone the repository or download the ZIP file from GitHub.
+![Download Instruction](./assets/instructions/download.png)
 
-### Step 2: Open Your Browser
+### Step 2: Open Your Browser And Enable Developer Mode
 
-Go to chrome://extensions.
+Go to extension settings with given URL.
 
-### Step 3: Enable Developer Mode
+**Chrome** : `chrome://extensions`
+
+**Egde** : `edge://extensions`
+
+**Brave** : `brave://extensions`
+
+**Vivaldi** : `vivaldi://extensions`
 
 Toggle the “Developer mode” switch in the top right corner of the page.
 
-### Step 4: Load the Extension
+![Set Dev Mode Instruction](./assets/instructions/dev-mode.png)
 
-Click on “Load unpacked” and select the folder where you extracted the Pintree extension files.
+### Step 3: Load the Extension
+
+Click on “Load unpacked” and select the zip folder where you extracted the Pintree extension files.
+![Load Extension Instruction](./assets/instructions/load.png)
 
 ## More changes You can make
 
