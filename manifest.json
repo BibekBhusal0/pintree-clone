@@ -4,19 +4,19 @@
   "description": "simple and useless chrome extension not to take seriously",
   "version": "1.0",
   "icons": {
-    "16": "images/color.png",
-    "32": "images/color.png",
-    "48": "images/color.png",
-    "128": "images/color.png"
+    "16": "assets/favicon/icon16.png",
+    "32": "assets/favicon/icon32.png",
+    "48": "assets/favicon/icon48.png",
+    "64": "assets/favicon/icon64.png",
+    "128": "assets/favicon/icon128.png"
   },
   "action": {
     "default_popup": "popup.html"
   },
   "chrome_url_overrides": {
-    "newtab": "new-tab.html"
+    "newtab": "index.html"
   },
   "permissions": [
-    "bookmarks",
-    "favicon"
+    "bookmarks", "favicon"
   ]
 }
