@@ -1,57 +1,47 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Variables for sidebar elements
-  const openSidebarButton = document.getElementById("open-sidebar-button");
-  const closeSidebarButton = document.getElementById("close-sidebar-button");
-  const offCanvasMenu = document.getElementById("off-canvas-menu");
-  const offCanvasBackdrop = document.getElementById("off-canvas-backdrop");
-  const offCanvasContent = document.getElementById("off-canvas-content");
-
-  // Function to open the sidebar
-  const openSidebar = () => {
-    offCanvasMenu.classList.remove("hidden");
-    setTimeout(() => {
-      offCanvasBackdrop.classList.add("opacity-100");
-      offCanvasContent.classList.add("translate-x-0");
-    }, 10);
-  };
-
-  // Function to close the sidebar
-  const closeSidebar = () => {
-    offCanvasBackdrop.classList.remove("opacity-100");
-    offCanvasContent.classList.remove("translate-x-0");
-    setTimeout(() => {
-      offCanvasMenu.classList.add("hidden");
-    }, 300); // Match the duration of the transition
-  };
-
-  // Event listeners for open and close buttons
-  openSidebarButton.addEventListener("click", openSidebar);
-  closeSidebarButton.addEventListener("click", closeSidebar);
-  offCanvasBackdrop.addEventListener("click", closeSidebar); // Close sidebar when clicking on the backdrop
-});
-
 const getBookmarks = async () => {
-  const bookmarks = await chrome.bookmarks.getTree();
-  return bookmarks;
+  return await chrome.bookmarks.getTree();
 };
+
+// Fetch and render data
+getBookmarks()
+  .then((data) => {
+    // Use the first layer of the data directly
+    const firstLayer = data;
+    // Render navigation using the first layer of data
+    renderNavigation(firstLayer, document.getElementById("navigation"), true);
+    // Render bookmarks using the first layer of data, starting from the Bookmark
+    renderBookmarks(firstLayer, [{ title: "Bookmark", children: firstLayer }]);
+
+    // Automatically select and show the first item
+    if (firstLayer.length > 0) {
+      const firstItem = firstLayer[0];
+      updateSidebarActiveState([
+        { title: firstItem.title, children: firstItem.children },
+      ]);
+      renderBookmarks(firstItem.children, [
+        { title: "Bookmark", children: firstLayer },
+        { title: firstItem.title, children: firstItem.children },
+      ]);
+    }
+  })
+  .catch((error) => console.error("Error loading bookmarks:", error));
 
 // Search functionality
 function searchBookmarks(query) {
-  fetch("json/pintree.json")
-    .then((response) => response.json())
+  getBookmarks()
     .then((data) => {
       const results = searchInData(data, query.toLowerCase());
       renderBookmarks(results, [
         { title: "Search Results", children: results },
       ]);
+      document.getElementById("clearSearchButton").classList.remove("hidden");
     })
     .catch((error) => console.error("Error searching bookmarks:", error));
 }
 
 // Clear search results and reset UI
 function clearSearchResults() {
-  fetch("json/pintree.json")
-    .then((response) => response.json())
+  getBookmarks()
     .then((data) => {
       const secondLayer = data[0].children;
       renderNavigation(secondLayer, document.getElementById("navigation"));
@@ -66,8 +56,7 @@ function clearSearchResults() {
 
 document.addEventListener("DOMContentLoaded", () => {
   // Fetch and render data
-  fetch("json/pintree.json")
-    .then((response) => response.json())
+  getBookmarks()
     .then((data) => {
       // Hide loading spinner
       document.getElementById("loading-spinner").style.display = "none";
@@ -100,31 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Fetch and render data
-fetch("json/pintree.json")
-  .then((response) => response.json())
-  .then((data) => {
-    // Use the first layer of the data directly
-    const firstLayer = data;
-    // Render navigation using the first layer of data
-    renderNavigation(firstLayer, document.getElementById("navigation"), true);
-    // Render bookmarks using the first layer of data, starting from the Bookmark
-    renderBookmarks(firstLayer, [{ title: "Bookmark", children: firstLayer }]);
-
-    // Automatically select and show the first item
-    if (firstLayer.length > 0) {
-      const firstItem = firstLayer[0];
-      updateSidebarActiveState([
-        { title: firstItem.title, children: firstItem.children },
-      ]);
-      renderBookmarks(firstItem.children, [
-        { title: "Bookmark", children: firstLayer },
-        { title: firstItem.title, children: firstItem.children },
-      ]);
-    }
-  })
-  .catch((error) => console.error("Error loading bookmarks:", error));
-
 function searchInData(data, query) {
   let results = [];
   data.forEach((item) => {
@@ -151,7 +115,8 @@ document
   .addEventListener("click", clearSearchResults);
 
 // Create bookmark card element
-function createCard(title, url, icon) {
+function createCard(link) {
+  const { title, url, icon } = link;
   const card = document.createElement("div");
   card.className =
     "cursor-pointer flex items-center hover:shadow-sm transition-shadow p-4 bg-white shadow-sm ring-1 ring-gray-900/5 dark:pintree-ring-gray-800 rounded-lg hover:bg-gray-100 dark:pintree-bg-gray-900 dark:hover:pintree-bg-gray-800";
@@ -443,7 +408,7 @@ function renderBookmarks(data, path) {
     linkSection.className =
       "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-6";
     links.forEach((link) => {
-      const card = createCard(link.title, link.url, link.icon);
+      const card = createCard(link);
       linkSection.appendChild(card);
     });
     container.appendChild(linkSection);
