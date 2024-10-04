@@ -50,17 +50,65 @@ Go to extension settings with given URL.
 Toggle the “Developer mode” switch in the top right corner of the page.
 
 ![Set Dev Mode Instruction](./assets/instructions/dev-mode.png)
+Screenshot show instruction for brave it is similar to other browsers.
+
+Note that any chromium based browser will redirect to extension page when you go to `chrome://extensions`
 
 ### Step 3: Load the Extension
 
 Click on “Load unpacked” and select the zip folder where you extracted the Pintree extension files.
 ![Load Extension Instruction](./assets/instructions/load.png)
+Screenshot show instruction for brave it is similar to other browsers.
 
-## More changes You can make
+## More changes you can make
 
 ### If you don't want to change new tab you can change bookmarks page
 
+1. Change manifest.json file
+
+```diff
+    ...
+  "chrome_url_overrides": {
+-    "newtab": "index.html"
++    "bookmarks": "index.html"
+  },
+  "permissions": ["bookmarks", "favicon", "readingList", "tabs"]
+
+```
+
+2. Change popup.js file
+
+```diff
+-   const url = "chrome://newtab";
++   const url = "chrome://bookmarks";
+
+    const openLink = () => {
+        chrome.tabs.create({ url });
+    };
+
+    document.querySelector("button").addEventListener("click", openLink);
+```
+
+this will not change new tab but instead change chrome://bookmarks page
+
 ### You can remove reading list to be included in folders
+
+```diff
+    const getBookmarks = async () => {
+      const allBookmarks = await chrome.bookmarks.getTree();
+-      const readingList = await chrome.readingList.query({});
+-      if (readingList) {
+-        if (readingList.length > 0) {
+-          allBookmarks[0].children.push({
+-            title: "Reading List",
+-            children: readingList,
+-          });
+-        }
+-      }
+      return allBookmarks;
+    };
+
+```
 
 ## Acknowledgements
 

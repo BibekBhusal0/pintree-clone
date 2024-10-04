@@ -16,7 +16,5 @@
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
-  "permissions": [
-    "bookmarks", "favicon", "readingList"
-  ]
+  "permissions": ["bookmarks", "favicon", "readingList", "tabs"]
 }

@@ -2,10 +2,12 @@ const getBookmarks = async () => {
   const allBookmarks = await chrome.bookmarks.getTree();
   const readingList = await chrome.readingList.query({});
   if (readingList) {
-    allBookmarks[0].children.push({
-      title: "Reading List",
-      children: readingList,
-    });
+    if (readingList.length > 0) {
+      allBookmarks[0].children.push({
+        title: "Reading List",
+        children: readingList,
+      });
+    }
   }
   return allBookmarks;
 };
