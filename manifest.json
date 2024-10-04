@@ -17,6 +17,6 @@
     "newtab": "index.html"
   },
   "permissions": [
-    "bookmarks", "favicon"
+    "bookmarks", "favicon", "readingList"
   ]
 }

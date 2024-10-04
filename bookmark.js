@@ -1,5 +1,13 @@
 const getBookmarks = async () => {
-  return await chrome.bookmarks.getTree();
+  const allBookmarks = await chrome.bookmarks.getTree();
+  const readingList = await chrome.readingList.query({});
+  if (readingList) {
+    allBookmarks[0].children.push({
+      title: "Reading List",
+      children: readingList,
+    });
+  }
+  return allBookmarks;
 };
 function faviconURL(u) {
   const url = new URL(chrome.runtime.getURL("/_favicon/"));
@@ -8,29 +16,37 @@ function faviconURL(u) {
   return url.toString();
 }
 
-// Fetch and render data
-getBookmarks()
-  .then((data) => {
-    // Use the first layer of the data directly
-    const firstLayer = data;
-    // Render navigation using the first layer of data
-    renderNavigation(firstLayer, document.getElementById("navigation"), true);
-    // Render bookmarks using the first layer of data, starting from the Bookmark
-    renderBookmarks(firstLayer, [{ title: "Bookmark", children: firstLayer }]);
+const title = "All Bookmarks";
+document.addEventListener("DOMContentLoaded", () => {
+  // Fetch and render data
+  getBookmarks()
+    .then((data) => {
+      // Hide loading spinner
+      document.getElementById("loading-spinner").style.display = "none";
 
-    // Automatically select and show the first item
-    if (firstLayer.length > 0) {
-      const firstItem = firstLayer[0];
-      updateSidebarActiveState([
-        { title: firstItem.title, children: firstItem.children },
-      ]);
-      renderBookmarks(firstItem.children, [
-        { title: "Bookmark", children: firstLayer },
-        { title: firstItem.title, children: firstItem.children },
-      ]);
-    }
-  })
-  .catch((error) => console.error("Error loading bookmarks:", error));
+      const firstLayer = data.length === 1 ? data[0].children : data;
+      // const firstLayer = data[0].children;
+
+      renderNavigation(firstLayer, document.getElementById("navigation"));
+      renderBookmarks(firstLayer, [{ title, children: firstLayer }]);
+
+      // Automatically select and show the first item
+      // if (firstLayer.length > 0) {
+      //   const firstItem = firstLayer[0];
+      //   updateSidebarActiveState([
+      //     { title: firstLayer.title, children: firstItem.children },
+      //   ]);
+      //   renderBookmarks(firstItem.children, [
+      //     { title: firstLayer.title, children: firstLayer },
+      //     { title: firstItem.title, children: firstItem.children },
+      //   ]);
+      // }
+    })
+    .catch((error) => {
+      console.error("Error loading bookmarks:", error);
+      document.getElementById("loading-spinner").style.display = "none";
+    });
+});
 
 // Search functionality
 function searchBookmarks(query) {
@@ -51,49 +67,12 @@ function clearSearchResults() {
     .then((data) => {
       const secondLayer = data[0].children;
       renderNavigation(secondLayer, document.getElementById("navigation"));
-      renderBookmarks(secondLayer, [
-        { title: "Bookmark", children: secondLayer },
-      ]);
+      renderBookmarks(secondLayer, [{ title, children: secondLayer }]);
       document.getElementById("searchInput").value = "";
       document.getElementById("clearSearchButton").classList.add("hidden");
     })
     .catch((error) => console.error("Error clearing search results:", error));
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  // Fetch and render data
-  getBookmarks()
-    .then((data) => {
-      // Hide loading spinner
-      document.getElementById("loading-spinner").style.display = "none";
-
-      // Use the first layer of the data directly
-      const firstLayer = data;
-      // Render navigation using the first layer of data
-      renderNavigation(firstLayer, document.getElementById("navigation"), true);
-      // Render bookmarks using the first layer of data, starting from the Bookmark
-      renderBookmarks(firstLayer, [
-        { title: "Bookmark", children: firstLayer },
-      ]);
-
-      // Automatically select and show the first item
-      if (firstLayer.length > 0) {
-        const firstItem = firstLayer[0];
-        updateSidebarActiveState([
-          { title: firstItem.title, children: firstItem.children },
-        ]);
-        renderBookmarks(firstItem.children, [
-          { title: "Bookmark", children: firstLayer },
-          { title: firstItem.title, children: firstItem.children },
-        ]);
-      }
-    })
-    .catch((error) => {
-      console.error("Error loading bookmarks:", error);
-      // Optionally hide the spinner and show an error message
-      document.getElementById("loading-spinner").style.display = "none";
-    });
-});
 
 function searchInData(data, query) {
   let results = [];
