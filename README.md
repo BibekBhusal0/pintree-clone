@@ -8,9 +8,15 @@ Pintree is an open-source project that aims to convert browser bookmarks into a 
 
 This defination is from [Pintree GitHub](https://github.com/Pintree-io/pintree).
 
+### Pintree Demo
+![](./assets/sample.png)
+Demo screenshot from [app.pintree](https://app.pintree.io/)
+
 ## What is pintree chrome extension
 
 The Pintree Chrome Extension is a streamlined version of the Pintree project, designed specifically to enhance the way users manage their bookmarks directly within the browser. By leveraging the functionality of the original Pintree, this extension allows users to quickly convert their browser bookmarks into a visually appealing navigation website with minimal effort.
+
+Pintree looks just like demo above but it is in New tab page.
 
 ## Features of Pintree
 
