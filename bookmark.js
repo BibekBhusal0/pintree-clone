@@ -1,6 +1,12 @@
 const getBookmarks = async () => {
   return await chrome.bookmarks.getTree();
 };
+function faviconURL(u) {
+  const url = new URL(chrome.runtime.getURL("/_favicon/"));
+  url.searchParams.set("pageUrl", u);
+  url.searchParams.set("size", "32");
+  return url.toString();
+}
 
 // Fetch and render data
 getBookmarks()
@@ -116,7 +122,8 @@ document
 
 // Create bookmark card element
 function createCard(link) {
-  const { title, url, icon } = link;
+  const { title, url } = link;
+  const icon = faviconURL(url);
   const card = document.createElement("div");
   card.className =
     "cursor-pointer flex items-center hover:shadow-sm transition-shadow p-4 bg-white shadow-sm ring-1 ring-gray-900/5 dark:pintree-ring-gray-800 rounded-lg hover:bg-gray-100 dark:pintree-bg-gray-900 dark:hover:pintree-bg-gray-800";
